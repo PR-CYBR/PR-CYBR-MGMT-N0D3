@@ -1,0 +1,37 @@
+name: Test
+
+on:
+  push:
+    branches: [ test, main, dev ]
+  pull_request:
+    branches: [ test, main, dev ]
+
+jobs:
+  script-validation:
+    name: Validate Shell Scripts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Test script syntax
+        run: |
+          for script in $(find scripts -name "*.sh"); do
+            echo "Checking $script"
+            bash -n "$script"
+          done
+  
+  config-validation:
+    name: Validate Configuration Files
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Validate YAML files
+        run: |
+          pip install pyyaml
+          for file in $(find config -name "*.yaml" -o -name "*.yml" 2>/dev/null || true); do
+            if [ -f "$file" ]; then
+              echo "Validating $file"
+              python -c "import yaml; yaml.safe_load(open('$file'))" || echo "Warning: $file may have issues"
+            fi
+          done

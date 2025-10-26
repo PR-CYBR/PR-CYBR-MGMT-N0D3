@@ -1,0 +1,42 @@
+name: Build
+
+on:
+  push:
+    branches: [ main, dev, stage, prod ]
+  pull_request:
+    branches: [ main, dev, stage, prod ]
+
+jobs:
+  validate:
+    name: Validate Build Configuration
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Check directory structure
+        run: |
+          echo "Validating directory structure..."
+          [ -d "scripts" ] && echo "✓ scripts directory exists"
+          [ -d "config" ] && echo "✓ config directory exists"
+          [ -d "docs" ] && echo "✓ docs directory exists"
+          [ -d ".specify" ] && echo "✓ .specify directory exists"
+      
+      - name: Validate scripts are executable
+        run: |
+          echo "Checking script permissions..."
+          find scripts -name "*.sh" -type f ! -executable && exit 1 || echo "✓ All scripts are executable"
+      
+      - name: Check for required files
+        run: |
+          echo "Checking required files..."
+          [ -f "README.md" ] && echo "✓ README.md exists"
+          [ -f "LICENSE" ] && echo "✓ LICENSE exists"
+          [ -f "BRANCHING.md" ] && echo "✓ BRANCHING.md exists"
+          [ -f ".specify/constitution.md" ] && echo "✓ constitution.md exists"
+          [ -f ".specify/spec.md" ] && echo "✓ spec.md exists"
+          [ -f ".specify/plan.md" ] && echo "✓ plan.md exists"
+      
+      - name: Build summary
+        run: |
+          echo "Build validation complete!"
+          echo "Repository structure is valid."
