@@ -2,7 +2,7 @@ name: Terraform Cloud Bridge
 
 on:
   push:
-    branches: [ main, prod ]
+    branches: [main, prod]
     paths:
       - 'config/terraform/**'
   workflow_dispatch:
@@ -27,30 +27,30 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Check TFC Configuration
         id: check-tfc
         run: |
-          if [ -z "${{ secrets.TFC_API_TOKEN }}" ]; then
+          if [ -z "${{ secrets.TFC_API_TOKEN }}"]; then
             echo "configured=false" >> $GITHUB_OUTPUT
             echo "⚠️ TFC_API_TOKEN not configured"
           else
             echo "configured=true" >> $GITHUB_OUTPUT
           fi
-      
+
       - name: Setup Terraform
         if: steps.check-tfc.outputs.configured == 'true'
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "~1.0"
           cli_config_credentials_token: ${{ secrets.TFC_API_TOKEN }}
-      
+
       - name: Terraform Init
         if: steps.check-tfc.outputs.configured == 'true' && hashFiles('config/terraform/**/*.tf') != ''
         run: |
           cd config/terraform
           terraform init
-      
+
       - name: Terraform Plan
         if: steps.check-tfc.outputs.configured == 'true' && hashFiles('config/terraform/**/*.tf') != ''
         id: plan
@@ -58,7 +58,7 @@ jobs:
           cd config/terraform
           terraform plan -no-color -out=tfplan
         continue-on-error: true
-      
+
       - name: Terraform Apply
         if: |
           steps.check-tfc.outputs.configured == 'true' &&
@@ -69,11 +69,11 @@ jobs:
         run: |
           cd config/terraform
           terraform apply -auto-approve tfplan
-      
+
       - name: Notify Slack on Success
         if: success() && steps.check-tfc.outputs.configured == 'true'
         run: |
-          if [ -n "${{ secrets.SLACK_WEBHOOK_URL }}" ]; then
+          if [ -n "${{ secrets.SLACK_WEBHOOK_URL }}"]; then
             curl -X POST "${{ secrets.SLACK_WEBHOOK_URL }}" \
               -H 'Content-Type: application/json' \
               -d "{
@@ -87,11 +87,11 @@ jobs:
                 }]
               }"
           fi
-      
+
       - name: Notify Slack on Failure
         if: failure() && steps.check-tfc.outputs.configured == 'true'
         run: |
-          if [ -n "${{ secrets.SLACK_WEBHOOK_URL }}" ]; then
+          if [ -n "${{ secrets.SLACK_WEBHOOK_URL }}"]; then
             curl -X POST "${{ secrets.SLACK_WEBHOOK_URL }}" \
               -H 'Content-Type: application/json' \
               -d "{
@@ -105,7 +105,7 @@ jobs:
                 }]
               }"
           fi
-      
+
       - name: Comment PR with Plan
         if: github.event_name == 'pull_request' && steps.plan.outcome != ''
         uses: actions/github-script@v7
@@ -113,17 +113,17 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const output = `#### Terraform Plan 📖
-            
+
             <details><summary>Show Plan</summary>
-            
+
             \`\`\`
             ${{ steps.plan.outputs.stdout }}
             \`\`\`
-            
+
             </details>
-            
+
             *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Workflow: \`${{ github.workflow }}\`*`;
-            
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,

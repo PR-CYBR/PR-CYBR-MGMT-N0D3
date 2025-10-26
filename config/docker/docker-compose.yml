@@ -3,7 +3,7 @@ version: '3.8'
 services:
   # Placeholder for management services
   # Add your services here as they are developed
-  
+
   # Example: Management API service
   # mgmt-api:
   #   image: ghcr.io/pr-cybr/pr-cybr-mgmt-n0d3:latest

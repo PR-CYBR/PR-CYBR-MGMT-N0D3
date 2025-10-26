@@ -26,6 +26,8 @@ if [ ! -f "$FILE_PATH" ]; then
 fi
 
 # Read file content
+# Note: CONTENT will be used when full API integration is implemented
+# shellcheck disable=SC2034
 CONTENT=$(cat "$FILE_PATH")
 
 # Convert markdown to Notion blocks (simplified)

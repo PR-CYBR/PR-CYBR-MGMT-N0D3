@@ -2,9 +2,9 @@ name: Test
 
 on:
   push:
-    branches: [ main, dev, impl, test ]
+    branches: [main, dev, impl, test]
   pull_request:
-    branches: [ main, dev, impl ]
+    branches: [main, dev, impl]
 
 jobs:
   script-tests:
@@ -12,15 +12,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y bats
-      
+
       - name: Run script tests
         run: |
-          if [ -d "tests" ]; then
+          if [ -d "tests"]; then
             bats tests/*.bats || echo "No tests found yet"
           else
             echo "Test directory not yet created"
@@ -31,18 +31,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Validate Docker Compose
         run: |
-          if [ -f "config/docker/docker-compose.yml" ]; then
+          if [ -f "config/docker/docker-compose.yml"]; then
             docker compose -f config/docker/docker-compose.yml config > /dev/null
           else
             echo "Docker compose file not yet created"
           fi
-      
+
       - name: Validate environment templates
         run: |
-          if [ -f "config/templates/.env.template" ]; then
+          if [ -f "config/templates/.env.template"]; then
             # Check that template has no actual secrets
             if grep -E "(password|token|key)=[^{]" config/templates/.env.template; then
               echo "Error: Template contains actual secrets"
@@ -57,7 +57,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Run integration tests
         run: |
           echo "Integration tests will be implemented as scripts are added"
@@ -69,22 +69,22 @@ jobs:
     if: hashFiles('config/terraform/**/*.tf') != ''
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "~1.0"
-      
+
       - name: Terraform Init
         run: |
-          if [ -d "config/terraform" ]; then
+          if [ -d "config/terraform"]; then
             cd config/terraform
             terraform init -backend=false
           fi
-      
+
       - name: Terraform Validate
         run: |
-          if [ -d "config/terraform" ]; then
+          if [ -d "config/terraform"]; then
             cd config/terraform
             terraform validate
           fi

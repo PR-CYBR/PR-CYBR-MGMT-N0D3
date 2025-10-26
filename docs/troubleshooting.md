@@ -540,9 +540,9 @@ free -h
 
 ### Where to Get Help
 
-1. Check GitHub Issues: https://github.com/PR-CYBR/PR-CYBR-MGMT-N0D3/issues
+1. Check GitHub Issues: <https://github.com/PR-CYBR/PR-CYBR-MGMT-N0D3/issues>
 2. Review documentation in `.specify/` directory
-3. Check Docker documentation: https://docs.docker.com/
+3. Check Docker documentation: <https://docs.docker.com/>
 4. Open a new issue with diagnostic information
 
 ### Creating a Good Bug Report

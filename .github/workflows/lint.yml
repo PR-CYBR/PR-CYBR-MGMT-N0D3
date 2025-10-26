@@ -2,9 +2,9 @@ name: Lint
 
 on:
   push:
-    branches: [ main, dev, impl ]
+    branches: [main, dev, impl]
   pull_request:
-    branches: [ main, dev, impl ]
+    branches: [main, dev, impl]
 
 jobs:
   shellcheck:
@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Run ShellCheck
         uses: ludeeus/action-shellcheck@master
         with:
@@ -24,10 +24,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Install yamllint
         run: pip install yamllint
-      
+
       - name: Run yamllint
         run: yamllint -c .yamllint.yml .github/workflows/ config/ || true
 
@@ -36,7 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Run markdownlint
         uses: DavidAnson/markdownlint-cli2-action@v16
         with:
@@ -49,15 +49,15 @@ jobs:
     if: hashFiles('config/terraform/**/*.tf') != ''
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "~1.0"
-      
+
       - name: Terraform Format Check
         run: |
-          if [ -d "config/terraform" ]; then
+          if [ -d "config/terraform"]; then
             cd config/terraform
             terraform fmt -check -recursive
           fi
@@ -69,7 +69,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      
+
       - name: Run Gitleaks
         uses: gitleaks/gitleaks-action@v2
         env:

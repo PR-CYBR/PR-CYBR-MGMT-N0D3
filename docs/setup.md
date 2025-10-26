@@ -159,7 +159,7 @@ sudo docker node ls
 
 ### Notion Integration
 
-1. Create a Notion integration at https://www.notion.so/my-integrations
+1. Create a Notion integration at <https://www.notion.so/my-integrations>
 2. Get the API token and database ID
 3. Test the integration:
    ```bash
