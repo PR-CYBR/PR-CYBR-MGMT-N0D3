@@ -1,6 +1,6 @@
 name: GitHub Pages Branch Workflow
 
-on:
+"on":
   push:
     branches: [gh-pages]
   pull_request:

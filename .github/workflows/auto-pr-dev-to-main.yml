@@ -1,5 +1,5 @@
 name: Auto PR from dev to main
-on:
+"on":
   workflow_run:
     workflows: ["Dev Branch Workflow"]
     branches:

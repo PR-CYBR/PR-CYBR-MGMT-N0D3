@@ -1,6 +1,6 @@
 name: Dev Branch Workflow
 
-on:
+"on":
   push:
     branches: [dev]
   pull_request:

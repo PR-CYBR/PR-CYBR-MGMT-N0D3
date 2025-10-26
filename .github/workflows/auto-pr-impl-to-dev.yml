@@ -1,5 +1,5 @@
 name: Auto PR from impl to dev
-on:
+"on":
   workflow_run:
     workflows: ["Implementation Branch Workflow"]
     branches:

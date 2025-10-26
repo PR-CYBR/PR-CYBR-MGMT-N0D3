@@ -1,6 +1,6 @@
 name: Design Branch Workflow
 
-on:
+"on":
   push:
     branches: [design]
   pull_request:

@@ -1,5 +1,5 @@
 name: Pages Branch Workflow
-on:
+"on":
   push:
     branches:
       - pages

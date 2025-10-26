@@ -1,5 +1,5 @@
 name: Spec-Kit Validation
-on:
+"on":
   push:
     branches: [main]
   pull_request:

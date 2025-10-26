@@ -1,5 +1,5 @@
 name: Auto PR from spec to plan
-on:
+"on":
   workflow_run:
     workflows: ["Spec Branch Workflow"]
     branches:

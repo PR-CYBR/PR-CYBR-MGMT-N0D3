@@ -1,10 +1,10 @@
 name: Test
 
-on:
+"on":
   push:
-    branches: [ test, main, dev ]
+    branches: [test, main, dev]
   pull_request:
-    branches: [ test, main, dev ]
+    branches: [test, main, dev]
 
 jobs:
   script-validation:
@@ -12,20 +12,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Test script syntax
         run: |
           for script in $(find scripts -name "*.sh"); do
             echo "Checking $script"
             bash -n "$script"
           done
-  
+
   config-validation:
     name: Validate Configuration Files
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Validate YAML files
         run: |
           pip install pyyaml

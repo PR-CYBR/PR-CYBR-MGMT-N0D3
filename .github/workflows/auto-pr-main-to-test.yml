@@ -1,5 +1,5 @@
 name: Auto PR from main to test
-on:
+"on":
   workflow_run:
     workflows: ["Spec-Kit Validation"]
     branches:

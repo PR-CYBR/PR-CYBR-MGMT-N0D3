@@ -1,5 +1,5 @@
 name: Auto PR from codex to pages
-on:
+"on":
   workflow_run:
     workflows: ["Codex Branch Workflow"]
     branches:

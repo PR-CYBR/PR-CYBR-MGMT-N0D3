@@ -1,6 +1,6 @@
 name: Spec Branch Workflow
 
-on:
+"on":
   push:
     branches: [spec]
   pull_request:

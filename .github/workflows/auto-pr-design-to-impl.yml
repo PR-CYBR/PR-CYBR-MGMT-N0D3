@@ -1,5 +1,5 @@
 name: Auto PR from design to impl
-on:
+"on":
   workflow_run:
     workflows: ["Design Branch Workflow"]
     branches:

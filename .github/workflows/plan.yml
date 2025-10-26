@@ -1,6 +1,6 @@
 name: Plan Branch Workflow
 
-on:
+"on":
   push:
     branches: [plan]
   pull_request:

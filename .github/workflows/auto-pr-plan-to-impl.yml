@@ -1,5 +1,5 @@
 name: Auto PR from plan to impl
-on:
+"on":
   workflow_run:
     workflows: ["Plan Branch Workflow"]
     branches:

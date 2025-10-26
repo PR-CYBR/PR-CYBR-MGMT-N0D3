@@ -1,6 +1,6 @@
 name: Codex Branch Workflow
 
-on:
+"on":
   push:
     branches: [codex]
   pull_request:

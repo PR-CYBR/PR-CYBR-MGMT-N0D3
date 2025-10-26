@@ -1,6 +1,6 @@
 name: Production Branch Workflow
 
-on:
+"on":
   push:
     branches:
       - prod
