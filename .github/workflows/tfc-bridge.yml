@@ -21,6 +21,10 @@ on:
           - apply
           - destroy
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   tfc-bridge:
     name: Terraform Cloud Operations

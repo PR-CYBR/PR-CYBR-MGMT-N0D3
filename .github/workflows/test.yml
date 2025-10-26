@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [main, dev, impl]
 
+permissions:
+  contents: read
+
 jobs:
   script-tests:
     name: Script Unit Tests
