@@ -24,7 +24,14 @@ jobs:
       - name: Validate scripts are executable
         run: |
           echo "Checking script permissions..."
-          find scripts -name "*.sh" -type f ! -executable && exit 1 || echo "✓ All scripts are executable"
+          NON_EXEC=$(find scripts -name "*.sh" -type f ! -executable)
+          if [ -n "$NON_EXEC" ]; then
+            echo "Error: The following scripts are not executable:"
+            echo "$NON_EXEC"
+            exit 1
+          else
+            echo "✓ All scripts are executable"
+          fi
 
       - name: Check for required files
         run: |
