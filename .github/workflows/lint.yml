@@ -57,7 +57,7 @@ jobs:
 
       - name: Terraform Format Check
         run: |
-          if [ -d "config/terraform"]; then
+          if [ -d "config/terraform"  ]; then
             cd config/terraform
             terraform fmt -check -recursive
           fi

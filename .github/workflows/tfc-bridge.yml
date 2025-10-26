@@ -31,7 +31,7 @@ jobs:
       - name: Check TFC Configuration
         id: check-tfc
         run: |
-          if [ -z "${{ secrets.TFC_API_TOKEN }}"]; then
+          if [ -z "${{ secrets.TFC_API_TOKEN }}"  ]; then
             echo "configured=false" >> $GITHUB_OUTPUT
             echo "⚠️ TFC_API_TOKEN not configured"
           else
@@ -73,7 +73,7 @@ jobs:
       - name: Notify Slack on Success
         if: success() && steps.check-tfc.outputs.configured == 'true'
         run: |
-          if [ -n "${{ secrets.SLACK_WEBHOOK_URL }}"]; then
+          if [ -n "${{ secrets.SLACK_WEBHOOK_URL }}"  ]; then
             curl -X POST "${{ secrets.SLACK_WEBHOOK_URL }}" \
               -H 'Content-Type: application/json' \
               -d "{
@@ -91,7 +91,7 @@ jobs:
       - name: Notify Slack on Failure
         if: failure() && steps.check-tfc.outputs.configured == 'true'
         run: |
-          if [ -n "${{ secrets.SLACK_WEBHOOK_URL }}"]; then
+          if [ -n "${{ secrets.SLACK_WEBHOOK_URL }}"  ]; then
             curl -X POST "${{ secrets.SLACK_WEBHOOK_URL }}" \
               -H 'Content-Type: application/json' \
               -d "{

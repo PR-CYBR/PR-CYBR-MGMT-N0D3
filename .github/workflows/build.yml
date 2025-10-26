@@ -48,7 +48,7 @@ jobs:
       - name: Check for Dockerfile
         id: check-dockerfile
         run: |
-          if [ -f "Dockerfile"]; then
+          if [ -f "Dockerfile"  ]; then
             echo "exists=true" >> $GITHUB_OUTPUT
           else
             echo "exists=false" >> $GITHUB_OUTPUT
