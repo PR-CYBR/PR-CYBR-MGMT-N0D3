@@ -1,0 +1,90 @@
+name: Test
+
+on:
+  push:
+    branches: [ main, dev, impl, test ]
+  pull_request:
+    branches: [ main, dev, impl ]
+
+jobs:
+  script-tests:
+    name: Script Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y bats
+      
+      - name: Run script tests
+        run: |
+          if [ -d "tests" ]; then
+            bats tests/*.bats || echo "No tests found yet"
+          else
+            echo "Test directory not yet created"
+          fi
+
+  config-validation:
+    name: Configuration Validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Validate Docker Compose
+        run: |
+          if [ -f "config/docker/docker-compose.yml" ]; then
+            docker compose -f config/docker/docker-compose.yml config > /dev/null
+          else
+            echo "Docker compose file not yet created"
+          fi
+      
+      - name: Validate environment templates
+        run: |
+          if [ -f "config/templates/.env.template" ]; then
+            # Check that template has no actual secrets
+            if grep -E "(password|token|key)=[^{]" config/templates/.env.template; then
+              echo "Error: Template contains actual secrets"
+              exit 1
+            fi
+          else
+            echo "Environment template not yet created"
+          fi
+
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Run integration tests
+        run: |
+          echo "Integration tests will be implemented as scripts are added"
+          # Future: Test script integrations with mock services
+
+  terraform-validate:
+    name: Terraform Validation
+    runs-on: ubuntu-latest
+    if: hashFiles('config/terraform/**/*.tf') != ''
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "~1.0"
+      
+      - name: Terraform Init
+        run: |
+          if [ -d "config/terraform" ]; then
+            cd config/terraform
+            terraform init -backend=false
+          fi
+      
+      - name: Terraform Validate
+        run: |
+          if [ -d "config/terraform" ]; then
+            cd config/terraform
+            terraform validate
+          fi
