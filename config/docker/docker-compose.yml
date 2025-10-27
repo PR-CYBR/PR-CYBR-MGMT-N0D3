@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  # Placeholder for management services
+  # Add your services here as they are developed
+
+  # Example: Management API service
+  # mgmt-api:
+  #   image: ghcr.io/pr-cybr/pr-cybr-mgmt-n0d3:latest
+  #   networks:
+  #     - management
+  #   environment:
+  #     - LOG_LEVEL=${LOG_LEVEL:-INFO}
+  #   secrets:
+  #     - tfc_api_token
+  #     - notion_api_token
+  #     - slack_webhook_url
+  #   deploy:
+  #     replicas: 2
+  #     update_config:
+  #       parallelism: 1
+  #       delay: 10s
+  #     restart_policy:
+  #       condition: on-failure
+
+networks:
+  management:
+    driver: overlay
+    attachable: true
+  services:
+    driver: overlay
+    attachable: true
+  monitoring:
+    driver: overlay
+    attachable: true
+
+# Docker secrets (reference external secrets)
+# secrets:
+#   tfc_api_token:
+#     external: true
+#   notion_api_token:
+#     external: true
+#   slack_webhook_url:
+#     external: true
