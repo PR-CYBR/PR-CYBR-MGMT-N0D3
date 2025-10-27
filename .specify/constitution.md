@@ -1,132 +1,89 @@
-# Constitution
+# Constitution  
+  
+## Purpose  
+  
+This repository serves as the central management node for the PR-CYBR distributed architecture. It orchestrates Docker Swarm deployment, secrets management, networking, and automation across client nodes. It integrates with Terraform Cloud, Notion, and Slack to provide a complete infrastructure management platform.  
+  
+## Principles  
+  
+1. **Specification‑Driven Development**  
+All development begins with clear specifications. Code implements specifications, not vice versa.  
+  
+2. **Infrastructure as Code**  
+All infrastructure configuration is version controlled and managed through code. Changes to infrastructure follow the same review and testing processes as application code.  
+  
+3. **Incremental Planning**  
+Work is broken down into discrete, manageable tasks that can be tracked and validated independently.  
+  
+4. **Automation First**  
+Repetitive processes are automated through workflows and scripts, reducing manual effort and human error. Docker Swarm orchestration, Terraform Cloud deployments, and integrations with Notion and Slack are all automated.  
+  
+5. **Documentation as Code**  
+Documentation lives alongside code, versioned and reviewed through the same processes. SOPs (Standard Operating Procedures) are maintained for all management operations.  
+  
+## Structure  
+  
+/.specify  
+Core directory containing:  
+- **constitution.md** – This file, defining project principles  
+- **spec.md** – Technical specifications for Docker Swarm, Terraform Cloud, Notion, and Slack integrations  
+- **plan.md** – High‑level implementation plan  
+- **/tasks/** – Directory for individual task specifications  
 
-## Purpose
+/docs  
+Standard Operating Procedures (SOPs) for:  
+- Docker Swarm node management  
+- Terraform Cloud integration  
+- Notion workspace automation  
+- Slack notifications and alerting  
 
-This repository serves as the central management node for the PR-CYBR distributed architecture. It orchestrates Docker Swarm deployment, manages secrets and networking, and provides automation across client nodes. The management node is the control plane for all PR-CYBR infrastructure operations.
+/scripts  
+Management automation scripts for:  
+- Docker Swarm node provisioning and configuration  
+- Terraform Cloud workspace management  
+- Environment setup and secrets configuration  
 
-## Principles
+/config  
+Configuration templates for:  
+- Docker Swarm setup  
+- Terraform Cloud workspaces  
+- Environment variables and secrets management  
+  
+/.github/workflows  
+Automation workflows for linting, validation, and task management.  
+  
+## Governance  
+  
+Changes to the constitution require explicit review and approval. The constitution serves as the foundational agreement for how the project operates.  
+  
+## Adaptability  
 
-1. **Infrastructure as Code**
-All infrastructure configurations are version controlled and declarative. Changes to infrastructure follow the same review process as code changes.
+This management node is designed to be extended with additional integrations and automation as the PR-CYBR architecture evolves. New client nodes, services, and integrations should follow the established patterns for configuration and automation.  
 
-2. **Security First**
-Secrets are never committed to the repository. All sensitive data is managed through secure secret management systems and environment variables.
+## Branching Strategy  
 
-3. **Automated Operations**
-Manual operations are minimized through comprehensive automation. Workflows handle deployment, monitoring, and routine maintenance tasks.
+This repository implements a comprehensive branching scheme to support specification‑driven development:  
 
-4. **Centralized Management**
-The management node serves as the single source of truth for infrastructure state, configuration, and orchestration across all client nodes.
+- **Specification Branches** (`spec`): Requirements and technical specifications  
+- **Planning Branches** (`plan`): Implementation planning and task breakdown  
+- **Design Branches** (`design`): UI/UX artifacts and design systems  
+- **Implementation Branches** (`impl`): Active development work  
+- **Development Branches** (`dev`): Feature integration and testing  
+- **Main Branch** (`main`): Stable baseline for production  
+- **Test Branches** (`test`): Continuous integration and automated testing  
+- **Staging Branches** (`stage`): Pre‑production validation  
+- **Production Branches** (`prod`): Deployed production code  
+- **Documentation Branches** (`pages`, `gh-pages`): Static site hosting and documentation  
+- **Knowledge Branches** (`codex`): Code examples and knowledge base  
 
-5. **Integration-Driven**
-The management node integrates with Terraform Cloud for infrastructure provisioning, Notion for documentation, Slack for notifications, and other services for a complete operational ecosystem.
+Work flows systematically through these branches using automated pull requests. Each branch has dedicated workflows that validate changes according to the phase of development. See [BRANCHING.md](../BRANCHING.md) for complete documentation.  
 
-6. **Specification-Driven Development**
-All development begins with clear specifications following the Spec-Kit framework. Code implements specifications, not vice versa.
-
-## Structure
-
-/.specify
-Core directory containing:
-- **constitution.md** – This file, defining project principles
-- **spec.md** – Technical specifications for the management node
-- **plan.md** – Implementation plan and roadmap
-- **/tasks/** – Individual task specifications
-
-/scripts
-Management scripts for:
-- Docker Swarm initialization and management
-- Node operations (add, remove, update)
-- Service deployment and configuration
-- Secret management
-- Integration automation
-
-/config
-Configuration files for:
-- Docker Compose service definitions
-- Terraform Cloud workspace settings
-- Environment variable templates
-- Integration configurations
-
-/.github/workflows
-Automation workflows for:
-- Linting and validation
-- Testing infrastructure changes
-- Building container images
-- Terraform Cloud bridge operations
-- Notification and reporting
-
-## Governance
-
-### Security Requirements
-- All secrets must be stored in environment variables or secure secret management systems
-- API tokens and credentials are rotated regularly
-- Access to the management node is strictly controlled and audited
-- All infrastructure changes require peer review
-
-### Operational Requirements
-- Changes to production infrastructure require approval from at least one maintainer
-- All deployments are logged and traceable
-- Rollback procedures are documented and tested
-- Monitoring and alerting are mandatory for all services
-
-### Integration Requirements
-- Terraform Cloud integration is required for infrastructure provisioning
-- Notion integration maintains up-to-date documentation
-- Slack integration provides real-time notifications
-- All integrations use secure authentication methods
-
-## Branching Strategy
-
-This repository implements a comprehensive branching scheme to support specification-driven development:
-
-- **Specification Branches** (`spec`): Requirements and technical specifications
-- **Planning Branches** (`plan`): Implementation planning and task breakdown
-- **Design Branches** (`design`): UI/UX artifacts and design systems
-- **Implementation Branches** (`impl`): Active development work
-- **Development Branches** (`dev`): Feature integration and testing
-- **Main Branch** (`main`): Stable baseline for production
-- **Test Branches** (`test`): Continuous integration and automated testing
-- **Staging Branches** (`stage`): Pre-production validation
-- **Production Branches** (`prod`): Deployed production code
-- **Documentation Branches** (`pages`, `gh-pages`): Static site hosting and documentation
-- **Knowledge Branches** (`codex`): Code examples and knowledge base
-
-Work flows systematically through these branches using automated pull requests. Each branch has dedicated workflows that validate changes according to the phase of development. See [BRANCHING.md](../BRANCHING.md) for complete documentation.
-
-## Technology Stack
-
-### Core Technologies
-- **Docker Swarm**: Container orchestration platform
-- **Terraform Cloud**: Infrastructure provisioning and state management
-- **Bash**: Primary scripting language for automation
-- **GitHub Actions**: CI/CD automation platform
-
-### Integrations
-- **Notion**: Documentation and knowledge management
-- **Slack**: Team communication and alerting
-- **GitHub API**: Repository and workflow automation
-
-## Compliance and Auditing
-
-All operations on the management node are logged and auditable. Audit logs include:
-- Infrastructure changes and deployments
-- Secret access and rotation
-- API calls to integrated services
-- User actions and approvals
-
-## Disaster Recovery
-
-The management node includes disaster recovery procedures:
-- Regular backups of configuration and state
-- Documented recovery procedures
-- Tested failover mechanisms
-- Geographic redundancy where applicable
-
-## Continuous Improvement
-
-The management node and its processes are continuously improved through:
-- Regular retrospectives and feedback collection
-- Automation of repetitive tasks
-- Integration of new tools and services
-- Documentation updates and knowledge sharing
+## Provisioning Protocol
+  
+The initial bootstrap of any repository derived from this template requires special handling to allow automation while preserving security. The provisioning protocol is:  
+  
+- **Detection of initial provisioning**: The workflow detects the absence of prior commits on the default branch or uses a tag (for example, `bootstrap-complete`) to identify when a repository is being initialized for the first time.  
+- **Temporary relaxation of branch protection**: Using GitHub’s API, branch protection rules on the default branch are temporarily relaxed, granting automation bots permission to merge PRs. These protections are re‑enabled immediately after the merge.  
+- **Automated merging of bootstrap pull requests**: Bootstrap pull requests created by Copilot or other automation are automatically marked as ready for review and merged by the workflow. Each automated merge is tagged for traceability.  
+- **Reinstatement of branch protection**: Immediately after merges, the workflow re‑enables the original branch protection rules to ensure the repository remains protected going forward.  
+- **Safeguards and fallback**: The workflow includes safeguards to prevent recursive invocation and handles API rate limits or permission errors gracefully. If automation encounters an error or is disabled, maintainers may perform the initial merge manually. After the first merge (whether manual or automated), all subsequent merges follow the normal CI/CD rules and respect branch protections.

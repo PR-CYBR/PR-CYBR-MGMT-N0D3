@@ -1,30 +1,25 @@
-# Terraform Cloud Configuration
-# This configuration should be synced with your TFC workspace
+# Example Terraform configuration for PR-CYBR infrastructure
+# This is a placeholder - customize for your needs
 
 terraform {
   required_version = ">= 1.0"
   
-  # Uncomment and configure when ready to use Terraform Cloud
-  # cloud {
-  #   organization = "PR-CYBR"
-  #   
-  #   workspaces {
-  #     name = "pr-cybr-mgmt-node"
-  #   }
-  # }
-  
   required_providers {
-    docker = {
-      source  = "kreuzwerker/docker"
-      version = "~> 3.0"
+    local = {
+      source  = "hashicorp/local"
+      version = "~> 2.0"
     }
   }
 }
 
-# Provider configuration
-# provider "docker" {
-#   host = "unix:///var/run/docker.sock"
-# }
+# Example: Create a local file
+resource "local_file" "example" {
+  content  = "PR-CYBR Management Node - Terraform Cloud Managed"
+  filename = "${path.module}/example.txt"
+}
 
-# Placeholder resources
-# Add your infrastructure resources here
+# Output example
+output "example_file" {
+  description = "Example file path"
+  value       = local_file.example.filename
+}

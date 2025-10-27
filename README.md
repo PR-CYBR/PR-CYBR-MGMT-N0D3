@@ -1,249 +1,184 @@
 # PR-CYBR-MGMT-N0D3
 
 [![Spec-Kit Validation](https://github.com/PR-CYBR/PR-CYBR-MGMT-N0D3/actions/workflows/spec-kit.yml/badge.svg)](https://github.com/PR-CYBR/PR-CYBR-MGMT-N0D3/actions/workflows/spec-kit.yml)
-[![Lint](https://github.com/PR-CYBR/PR-CYBR-MGMT-N0D3/actions/workflows/lint.yml/badge.svg)](https://github.com/PR-CYBR/PR-CYBR-MGMT-N0D3/actions/workflows/lint.yml)
-[![Test](https://github.com/PR-CYBR/PR-CYBR-MGMT-N0D3/actions/workflows/test.yml/badge.svg)](https://github.com/PR-CYBR/PR-CYBR-MGMT-N0D3/actions/workflows/test.yml)
 
-Central management node for PR-CYBR distributed architecture, orchestrating Docker Swarm deployment, secrets, networking, and automation across client nodes. Contains SOP bootstrap and infrastructure automation.
+Central management node for PR-CYBR distributed architecture, orchestrating Docker Swarm deployment, secrets management, networking, and automation across client nodes. Integrates with Terraform Cloud, Notion, and Slack for complete infrastructure management.
 
 ## Overview
 
-The PR-CYBR Management Node serves as the control plane for the entire PR-CYBR distributed infrastructure. It provides:
+PR-CYBR-MGMT-N0D3 is the orchestration hub for the PR-CYBR distributed architecture, providing:
 
 - **Docker Swarm Management**: Initialize, configure, and manage Docker Swarm clusters
-- **Infrastructure Automation**: Scripts and workflows for common operations
-- **Integration Hub**: Connects with Terraform Cloud, Notion, Slack, and GitHub
-- **Secret Management**: Secure handling of credentials and sensitive data
-- **CI/CD Pipeline**: Automated testing, building, and deployment
-- **Specification-Driven Development**: Uses Spec-Kit framework for all changes
+- **Terraform Cloud Integration**: Infrastructure as Code automation via Terraform Cloud
+- **Notion Integration**: Automated documentation synchronization
+- **Slack Notifications**: Real-time alerts and status updates
+- **Secrets Management**: Centralized secrets and configuration management
+- **SOP Documentation**: Standard Operating Procedures for all operations
 
 ## Quick Start
 
 ### Prerequisites
 
-- Docker Engine 20.10 or higher
-- Bash 4.0 or higher
-- Git 2.20 or higher
-- Access to required external services (optional)
+- Docker with Swarm mode capability
+- Terraform Cloud account
+- Notion API access (optional)
+- Slack workspace with webhook access (optional)
+- GitHub account with Actions enabled
 
 ### Initial Setup
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/PR-CYBR/PR-CYBR-MGMT-N0D3.git
    cd PR-CYBR-MGMT-N0D3
    ```
 
 2. **Configure environment variables**
+
    ```bash
-   cp config/templates/.env.template .env
-   # Edit .env with your actual values
-   nano .env
+   cp config/.env.example .env
+   # Edit .env with your configuration
    ```
 
-3. **Initialize Docker Swarm**
+3. **Initialize the environment**
+
    ```bash
-   ./scripts/swarm/init-swarm.sh
+   ./scripts/setup/init-env.sh
    ```
 
-4. **Verify installation**
+4. **Configure secrets**
+
    ```bash
-   docker node ls
-   docker network ls
+   ./scripts/setup/configure-secrets.sh
    ```
 
-## Repository Structure
+## Directory Structure
 
 ```
-PR-CYBR-MGMT-N0D3/
+/
+├── .specify/              # Spec-Kit framework files
+│   ├── constitution.md    # Project principles and governance
+│   ├── spec.md           # Technical specifications
+│   ├── plan.md           # Implementation plan
+│   └── tasks/            # Task specifications
 ├── .github/
-│   └── workflows/          # GitHub Actions CI/CD workflows
-│       ├── lint.yml        # Linting and code quality
-│       ├── test.yml        # Integration tests
-│       ├── build.yml       # Container image builds
-│       ├── tfc-bridge.yml  # Terraform Cloud integration
-│       └── spec-kit.yml    # Spec framework validation
-├── .specify/               # Specification framework
-│   ├── constitution.md     # Project principles
-│   ├── spec.md            # Technical specifications
-│   ├── plan.md            # Implementation plan
-│   └── tasks/             # Task breakdowns
+│   └── workflows/        # GitHub Actions workflows
+├── docs/
+│   ├── SOPs/            # Standard Operating Procedures
+│   └── architecture/    # System documentation
 ├── scripts/
-│   ├── swarm/             # Docker Swarm management
-│   │   ├── init-swarm.sh  # Initialize swarm
-│   │   └── add-node.sh    # Add nodes to swarm
-│   ├── integrations/      # External service integrations
-│   │   ├── slack-notify.sh
-│   │   ├── notion-sync.sh
-│   │   └── tfc-sync.sh
-│   └── secrets/           # Secret management (future)
+│   ├── docker-swarm/    # Docker Swarm management scripts
+│   ├── terraform/       # Terraform Cloud scripts
+│   ├── integrations/    # Notion and Slack integration scripts
+│   └── setup/           # Setup and configuration scripts
 ├── config/
-│   ├── docker/            # Docker configurations
-│   │   └── docker-compose.yml
-│   ├── terraform/         # Terraform configurations
-│   │   ├── main.tf
-│   │   ├── variables.tf
-│   │   └── outputs.tf
-│   └── templates/         # Configuration templates
-│       └── .env.template
-├── docs/                  # Additional documentation (future)
-├── BRANCHING.md          # Branching strategy
-└── README.md             # This file
+│   ├── docker/          # Docker Swarm configurations
+│   ├── terraform/       # Terraform configurations
+│   └── .env.example     # Environment variables template
+├── README.md            # This file
+├── BRANCHING.md         # Branching strategy documentation
+└── LICENSE              # MIT License
 ```
 
-## Scripts
+## Features
 
 ### Docker Swarm Management
 
-#### Initialize Swarm
-```bash
-./scripts/swarm/init-swarm.sh [advertise-addr]
-```
-Initializes a new Docker Swarm cluster on this node.
+Manage your Docker Swarm cluster with ease:
 
-#### Add Node to Swarm
-```bash
-./scripts/swarm/add-node.sh <node-ip> <role>
-```
-Displays instructions to add a new worker or manager node to the swarm.
+- Initialize new swarm clusters
+- Add worker and manager nodes
+- Remove nodes gracefully
+- Update services across the swarm
+- Deploy stack templates
 
-### Integrations
+See [docs/SOPs/docker-swarm-management.md](docs/SOPs/docker-swarm-management.md) for detailed instructions.
 
-#### Slack Notifications
-```bash
-./scripts/integrations/slack-notify.sh "<message>" "[title]" "[color]"
-```
-Sends a notification to Slack. Requires `SLACK_WEBHOOK_URL` environment variable.
+### Terraform Cloud Integration
 
-#### Notion Sync
-```bash
-./scripts/integrations/notion-sync.sh <file-path> [page-id]
-```
-Syncs documentation to Notion. Requires `NOTION_API_TOKEN` environment variable.
+Automate infrastructure management:
 
-#### Terraform Cloud Sync
-```bash
-./scripts/integrations/tfc-sync.sh <action> [workspace]
-```
-Interacts with Terraform Cloud. Actions: `status`, `plan`, `apply`. Requires `TFC_API_TOKEN`.
-
-## GitHub Actions Workflows
-
-### Lint Workflow
-Runs on every push and pull request to validate:
-- Shell scripts with shellcheck
-- YAML files with yamllint
-- Markdown with markdownlint
-- Terraform configurations
-- Secret scanning with gitleaks
-
-### Test Workflow
-Executes integration and unit tests:
-- Script functionality tests
+- Workspace synchronization
+- Automated plan and apply via GitHub Actions
+- Status reporting to Slack
 - Configuration validation
-- Terraform validation
 
-### Build Workflow
-Builds and publishes container images:
-- Builds Docker images
-- Runs security scans
-- Pushes to GitHub Container Registry
+See [docs/SOPs/terraform-cloud-setup.md](docs/SOPs/terraform-cloud-setup.md) for setup instructions.
 
-### Terraform Cloud Bridge
-Automates Terraform operations:
-- Triggers TFC workspace runs
-- Monitors run status
-- Reports results to Slack
+### Notion Integration
 
-### Spec-Kit Validation
-Validates specification framework:
-- Checks required files exist
-- Validates markdown syntax
-- Checks for broken links
+Keep documentation synchronized:
 
-## Environment Variables
+- Automatic doc sync to Notion workspace
+- Structured documentation database
+- Version tracking
 
-Create a `.env` file from the template and configure:
+See [docs/SOPs/notion-integration.md](docs/SOPs/notion-integration.md) for configuration.
 
-### Required Variables
-- `SWARM_MANAGER_IP`: IP address for swarm manager
-- `TFC_API_TOKEN`: Terraform Cloud API token
-- `NOTION_API_TOKEN`: Notion API token
-- `SLACK_WEBHOOK_URL`: Slack webhook URL
+### Slack Integration
 
-### Optional Variables
-- `TFC_ORGANIZATION`: Terraform Cloud organization (default: PR-CYBR)
-- `TFC_WORKSPACE`: Workspace name (default: pr-cybr-mgmt-node)
-- `SLACK_CHANNEL`: Default Slack channel (default: #pr-cybr-ops)
-- `LOG_LEVEL`: Logging level (default: INFO)
+Stay informed with real-time notifications:
 
-See `config/templates/.env.template` for complete list.
+- Deployment status updates
+- Docker Swarm events
+- CI/CD pipeline results
+- Security alerts
+
+See [docs/SOPs/slack-integration.md](docs/SOPs/slack-integration.md) for webhook setup.
 
 ## Branching Strategy
 
-This repository follows a comprehensive branching model for specification-driven development:
+This repository follows the Spec-Kit branching model with comprehensive branch structure:
 
-- `spec` → `plan` → `impl` → `dev` → `main` → `stage` → `prod`
-- Automated PRs between branches
-- Branch-specific workflows
+- `spec` → `plan` → `impl` → `dev` → `main` → `stage` → `prod` → `pages`
+- Additional branches: `design`, `test`, `codex`, `gh-pages`
 
-See [BRANCHING.md](BRANCHING.md) for detailed documentation.
+See [BRANCHING.md](BRANCHING.md) for complete documentation on the branching workflow.
 
-## Specification Framework
+## GitHub Actions Workflows
 
-This project uses the Spec-Kit framework for specification-driven development:
+### Core Workflows
 
-- **Constitution** (`.specify/constitution.md`): Project principles and governance
-- **Specifications** (`.specify/spec.md`): Technical requirements
-- **Plan** (`.specify/plan.md`): Implementation roadmap
-- **Tasks** (`.specify/tasks/`): Individual task breakdowns
+- **spec-kit.yml**: Validates Spec-Kit framework files
+- **lint.yml**: Lints shell scripts, YAML files, and markdown
+- **test.yml**: Tests scripts and configurations
+- **build.yml**: Builds Docker images and artifacts
+- **terraform-cloud-bridge.yml**: Integrates with Terraform Cloud
 
-## Security
+### Branch-Specific Workflows
 
-### Secret Management
-- Never commit secrets to the repository
-- Use environment variables for all sensitive data
-- Rotate secrets regularly
-- Use Docker secrets for swarm services
+Each branch has dedicated workflows for validation and deployment:
 
-### Secret Scanning
-The repository includes automated secret scanning with gitleaks. All commits are checked for exposed secrets.
+- `spec.yml`, `plan.yml`, `impl.yml`, `dev.yml`
+- `test.yml`, `stage.yml`, `prod.yml`, `pages.yml`
+- `design.yml`, `codex.yml`, `gh-pages.yml`
 
-### Network Security
-- Use TLS for all external communications
-- Configure firewall rules for swarm ports (2377, 7946, 4789)
-- Implement network segmentation with overlay networks
+### Auto-PR Workflows
 
-## Integrations
+Automated pull requests promote changes through the branching flow:
 
-### Terraform Cloud
-Manages infrastructure state and provisioning through Terraform Cloud API.
-
-### Notion
-Syncs documentation and SOPs to Notion for team collaboration.
-
-### Slack
-Sends notifications for deployments, alerts, and CI/CD events.
-
-### GitHub
-Automates workflows and manages repository operations.
+- `auto-pr-spec-to-plan.yml`
+- `auto-pr-plan-to-impl.yml`
+- `auto-pr-impl-to-dev.yml`
+- And more...
 
 ## Contributing
 
-1. Review the constitution: `.specify/constitution.md`
-2. Check the specifications: `.specify/spec.md`
-3. Follow the branching strategy: `BRANCHING.md`
-4. Create feature branches from appropriate branch
-5. Ensure all tests pass before creating PR
-6. Update specifications if making architectural changes
+This project uses specification-driven development:
 
-## Monitoring and Logging
+1. **Start with specs**: Update `.specify/spec.md` with requirements
+2. **Plan implementation**: Update `.specify/plan.md` with tasks
+3. **Create task files**: Add specific tasks to `.specify/tasks/`
+4. **Implement**: Follow the branching workflow
+5. **Document**: Update SOPs and README as needed
 
-Monitoring and centralized logging will be implemented in future phases. See `.specify/plan.md` for roadmap.
+## Security
 
-## Disaster Recovery
-
-Backup and recovery procedures will be documented in `docs/` directory. See `.specify/plan.md` for implementation timeline.
+- All secrets are managed via GitHub Secrets or secure environment files
+- Never commit secrets to the repository
+- Follow the principle of least privilege for all integrations
+- Review security documentation in [docs/SOPs/](docs/SOPs/)
 
 ## License
 
@@ -252,14 +187,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Support
 
 For issues, questions, or contributions:
-- Open an issue on GitHub
-- Review documentation in `.specify/` directory
-- Check `BRANCHING.md` for workflow questions
 
-## Roadmap
-
-See `.specify/plan.md` for detailed implementation roadmap and current status.
+1. Check existing [issues](https://github.com/PR-CYBR/PR-CYBR-MGMT-N0D3/issues)
+2. Review [documentation](docs/)
+3. Open a new issue with detailed information
 
 ## Acknowledgments
 
-Built using the [spec-bootstrap](https://github.com/PR-CYBR/spec-bootstrap) template for specification-driven development.
+- Built on the [Spec-Kit framework](https://github.com/PR-CYBR/spec-bootstrap)
+- Part of the PR-CYBR distributed architecture

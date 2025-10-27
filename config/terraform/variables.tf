@@ -1,7 +1,9 @@
-variable "swarm_manager_ip" {
-  description = "IP address of the Docker Swarm manager node"
+# Variable definitions for Terraform Cloud workspaces
+
+variable "region" {
+  description = "Cloud provider region"
   type        = string
-  default     = ""
+  default     = "us-east-1"
 }
 
 variable "environment" {
@@ -10,8 +12,17 @@ variable "environment" {
   default     = "dev"
 }
 
-variable "log_level" {
-  description = "Logging level"
+variable "project_name" {
+  description = "Project name for resource tagging"
   type        = string
-  default     = "INFO"
+  default     = "pr-cybr"
+}
+
+variable "tags" {
+  description = "Common tags to apply to all resources"
+  type        = map(string)
+  default = {
+    Project   = "PR-CYBR"
+    ManagedBy = "Terraform"
+  }
 }

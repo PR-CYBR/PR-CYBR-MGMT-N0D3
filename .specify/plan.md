@@ -1,396 +1,274 @@
 # Implementation Plan
 
 ## Overview
-This plan outlines the implementation roadmap for the PR-CYBR management node, from initial scaffolding to full operational capability.
 
-## Phase 1: Foundation Setup
-**Status**: 🔄 In Progress
+This plan outlines the implementation of PR-CYBR-MGMT-N0D3, the central management node for the PR-CYBR distributed architecture.
 
-### Specification Framework
+## Phase 1: Bootstrap and Foundation
+
+**Status**: ✅ Complete
+
+- [x] Initialize Spec-Kit framework
 - [x] Create `.specify` directory structure
-- [x] Write constitution.md with management node principles
-- [x] Write spec.md with technical specifications
-- [x] Write this plan.md file
-- [ ] Create initial task files in `tasks/` directory
+- [x] Customize `constitution.md` for management node
+- [x] Create `spec.md` with technical specifications
+- [x] Create this `plan.md` file
+- [x] Set up GitHub workflows from spec-bootstrap template
+- [x] Create `BRANCHING.md` documentation
+- [x] Set up `.gitignore` and linting configuration
 
-### Repository Structure
-- [x] Copy spec-bootstrap template files
-- [x] Create directory structure (scripts, config, docs)
-- [ ] Set up .gitignore for sensitive files
-- [ ] Add markdownlint configuration
-- [ ] Copy BRANCHING.md documentation
-- [ ] Add LICENSE file
+## Phase 2: Documentation Structure
 
-### Documentation
-- [ ] Update README with management node overview
-- [ ] Create docs/setup.md for initial setup
-- [ ] Create docs/deployment.md for deployment procedures
-- [ ] Create docs/troubleshooting.md for common issues
+**Status**: ⏳ In Progress
 
-## Phase 2: GitHub Actions Setup
+- [ ] Create `docs/` directory structure
+- [ ] Create `docs/SOPs/` for Standard Operating Procedures
+  - [ ] Docker Swarm management SOP
+  - [ ] Terraform Cloud setup SOP
+  - [ ] Notion integration SOP
+  - [ ] Slack integration SOP
+- [ ] Create `docs/architecture/` for system documentation
+  - [ ] System overview document
+  - [ ] Network topology diagram
+  - [ ] Security architecture
+
+## Phase 3: Script Development
+
 **Status**: ⏳ Pending
 
-### Core Workflows
-- [ ] Create lint.yml workflow
-  - [ ] Add shellcheck for bash scripts
-  - [ ] Add yamllint for YAML files
-  - [ ] Add markdownlint for documentation
-  - [ ] Add terraform fmt validation
-  - [ ] Add secret detection
+### Docker Swarm Scripts
 
-- [ ] Create test.yml workflow
-  - [ ] Add script unit tests
-  - [ ] Add integration test framework
-  - [ ] Add configuration validation tests
-  - [ ] Add disaster recovery tests
+- [ ] Create `scripts/docker-swarm/` directory
+- [ ] Implement `init-swarm.sh` - Initialize Docker Swarm cluster
+- [ ] Implement `add-node.sh` - Add worker/manager nodes
+- [ ] Implement `remove-node.sh` - Remove nodes from swarm
+- [ ] Implement `update-services.sh` - Update deployed services
 
-- [ ] Create build.yml workflow
-  - [ ] Add Docker image builds
-  - [ ] Add security scanning
-  - [ ] Add image tagging
-  - [ ] Add registry push
+### Terraform Cloud Scripts
 
-- [ ] Create tfc-bridge.yml workflow
-  - [ ] Add TFC authentication
-  - [ ] Add workspace trigger
-  - [ ] Add run monitoring
-  - [ ] Add status reporting
+- [ ] Create `scripts/terraform/` directory
+- [ ] Implement `setup-tfc.sh` - Configure Terraform Cloud integration
+- [ ] Implement `sync-workspaces.sh` - Synchronize workspace configurations
 
-### Spec-Kit Workflows
-- [ ] Copy spec-kit.yml from spec-bootstrap
-- [ ] Create branch-specific workflows
-  - [ ] spec.yml for specification branch
-  - [ ] plan.yml for planning branch
-  - [ ] impl.yml for implementation branch
-  - [ ] dev.yml for development branch
-  - [ ] stage.yml for staging branch
-  - [ ] prod.yml for production branch
+### Integration Scripts
 
-### Automated PR Workflows
-- [ ] Create auto-pr workflows for branch promotion
-  - [ ] spec → plan
-  - [ ] plan → impl
-  - [ ] impl → dev
-  - [ ] dev → main
-  - [ ] main → stage
-  - [ ] stage → prod
+- [ ] Create `scripts/integrations/` directory
+- [ ] Implement `notion-sync.sh` - Sync documentation to Notion
+- [ ] Implement `slack-notify.sh` - Send Slack notifications
 
-## Phase 3: Docker Swarm Scripts
-**Status**: ⏳ Pending
+### Setup Scripts
 
-### Initialization Scripts
-- [ ] Create scripts/swarm/init-swarm.sh
-  - [ ] Initialize swarm manager
-  - [ ] Generate join tokens
-  - [ ] Create overlay networks
-  - [ ] Set up service discovery
-  - [ ] Configure logging
+- [ ] Create `scripts/setup/` directory
+- [ ] Implement `init-env.sh` - Initialize environment
+- [ ] Implement `configure-secrets.sh` - Interactive secrets configuration
 
-### Node Management Scripts
-- [ ] Create scripts/swarm/add-node.sh
-  - [ ] Validate node requirements
-  - [ ] Generate appropriate join token
-  - [ ] Execute join command on remote node
-  - [ ] Verify node addition
-  - [ ] Apply node labels
+## Phase 4: Configuration Templates
 
-- [ ] Create scripts/swarm/remove-node.sh
-  - [ ] Drain node services
-  - [ ] Remove node from swarm
-  - [ ] Clean up node resources
-  - [ ] Update documentation
-
-- [ ] Create scripts/swarm/list-nodes.sh
-  - [ ] Display all nodes
-  - [ ] Show node status and roles
-  - [ ] Display resource usage
-  - [ ] Show labels and constraints
-
-### Service Management Scripts
-- [ ] Create scripts/swarm/deploy-service.sh
-  - [ ] Validate service configuration
-  - [ ] Deploy service to swarm
-  - [ ] Wait for service convergence
-  - [ ] Verify deployment
-  - [ ] Send notifications
-
-- [ ] Create scripts/swarm/scale-service.sh
-  - [ ] Get current replica count
-  - [ ] Update replica count
-  - [ ] Wait for scaling
-  - [ ] Verify scale operation
-
-- [ ] Create scripts/swarm/update-service.sh
-  - [ ] Validate new configuration
-  - [ ] Perform rolling update
-  - [ ] Monitor update progress
-  - [ ] Handle update failures
-
-- [ ] Create scripts/swarm/rollback-service.sh
-  - [ ] Identify previous version
-  - [ ] Perform rollback
-  - [ ] Verify rollback success
-  - [ ] Log rollback event
-
-## Phase 4: Configuration Files
 **Status**: ⏳ Pending
 
 ### Docker Configuration
-- [ ] Create config/docker/docker-compose.yml
-  - [ ] Define management services
-  - [ ] Configure networks
-  - [ ] Set up volumes
-  - [ ] Define secrets
 
-- [ ] Create config/docker/swarm-config.yml
-  - [ ] Define swarm parameters
-  - [ ] Configure overlay networks
-  - [ ] Set resource limits
-  - [ ] Configure health checks
+- [ ] Create `config/docker/` directory
+- [ ] Create `swarm-config.yaml` template
+- [ ] Create `stack-templates/` directory
+- [ ] Add example stack templates (web, database, etc.)
 
 ### Terraform Configuration
-- [ ] Create config/terraform/main.tf
-  - [ ] Define infrastructure resources
-  - [ ] Configure providers
-  - [ ] Set up modules
-  - [ ] Define outputs
 
-- [ ] Create config/terraform/variables.tf
-  - [ ] Define input variables
-  - [ ] Set default values
-  - [ ] Add variable descriptions
-  - [ ] Configure validation rules
+- [ ] Create `config/terraform/` directory
+- [ ] Create `workspaces.tf` - Terraform workspace definitions
+- [ ] Create `variables.tf` - Variable definitions
+- [ ] Add example configurations
 
-- [ ] Create config/terraform/outputs.tf
-  - [ ] Define output values
-  - [ ] Add output descriptions
-  - [ ] Configure sensitive outputs
+### Environment Variables
 
-### Environment Templates
-- [ ] Create config/templates/.env.template
-  - [ ] List all required environment variables
-  - [ ] Add descriptions for each variable
-  - [ ] Provide example values
-  - [ ] Document security requirements
+- [ ] Create `config/.env.example` template
+- [ ] Document all required environment variables
+- [ ] Add variable descriptions and examples
 
-- [ ] Create config/templates/secrets.template
-  - [ ] Define secret structure
-  - [ ] Document secret sources
-  - [ ] Add rotation procedures
-  - [ ] Include access controls
+## Phase 5: GitHub Actions Workflows
 
-## Phase 5: Integration Scripts
 **Status**: ⏳ Pending
 
-### Terraform Cloud Integration
-- [ ] Create scripts/integrations/tfc-sync.sh
-  - [ ] Authenticate with TFC API
-  - [ ] Sync workspace variables
-  - [ ] Trigger workspace runs
-  - [ ] Monitor run status
-  - [ ] Retrieve run outputs
-  - [ ] Handle errors and retries
+### Core Workflows
 
-### Notion Integration
-- [ ] Create scripts/integrations/notion-sync.sh
-  - [ ] Authenticate with Notion API
-  - [ ] Create/update pages
-  - [ ] Sync SOP documents
-  - [ ] Upload diagrams and images
-  - [ ] Organize in databases
-  - [ ] Handle API rate limits
+- [ ] Customize `lint.yml` for shell scripts, YAML, and markdown
+- [ ] Create `test.yml` for script validation
+- [ ] Create `build.yml` for Docker image builds
 
-### Slack Integration
-- [ ] Create scripts/integrations/slack-notify.sh
-  - [ ] Send formatted messages
-  - [ ] Support different message types
-  - [ ] Include rich formatting
-  - [ ] Add interactive elements
-  - [ ] Handle webhook errors
-  - [ ] Support multiple channels
+### Integration Workflows
 
-## Phase 6: Secret Management
+- [ ] Create `terraform-cloud-bridge.yml` for TFC integration
+  - [ ] Terraform validation
+  - [ ] Workspace synchronization
+  - [ ] Run triggering and monitoring
+  - [ ] Slack notification integration
+
+### Notification Enhancements
+
+- [ ] Add Slack notifications to existing workflows
+- [ ] Add status badges to README
+- [ ] Configure workflow triggers
+
+## Phase 6: Branch Structure Setup
+
 **Status**: ⏳ Pending
 
-### Secret Scripts
-- [ ] Create scripts/secrets/rotate-secrets.sh
-  - [ ] Generate new secrets
-  - [ ] Update services with new secrets
-  - [ ] Revoke old secrets
-  - [ ] Log rotation events
-  - [ ] Notify stakeholders
+Following the Spec-Kit branching model:
 
-- [ ] Create scripts/secrets/sync-secrets.sh
-  - [ ] Fetch secrets from source
-  - [ ] Distribute to nodes
-  - [ ] Validate secret distribution
-  - [ ] Handle sync failures
+- [ ] Document branch creation procedures
+- [ ] Create branch protection rules documentation
+- [ ] Set up auto-PR workflows between branches
+- [ ] Configure CI/CD for each branch
 
-### Secret Storage
-- [ ] Configure secret storage backend
-- [ ] Set up encryption at rest
-- [ ] Configure access controls
-- [ ] Implement audit logging
-- [ ] Create backup procedures
+### Branches to Initialize
 
-## Phase 7: Testing and Validation
+- [ ] `spec` - Specifications and requirements
+- [ ] `plan` - Planning and roadmap
+- [ ] `design` - Design artifacts
+- [ ] `impl` - Implementation work
+- [ ] `dev` - Development integration
+- [ ] `main` - Stable baseline (default)
+- [ ] `test` - Testing environment
+- [ ] `stage` - Staging environment
+- [ ] `prod` - Production environment
+- [ ] `pages` - Documentation site
+- [ ] `codex` - Knowledge base
+
+## Phase 7: Integration Setup
+
 **Status**: ⏳ Pending
 
-### Unit Tests
-- [ ] Create tests for swarm scripts
-- [ ] Create tests for integration scripts
-- [ ] Create tests for secret management
-- [ ] Set up test automation
+### Terraform Cloud
 
-### Integration Tests
-- [ ] Create end-to-end deployment tests
-- [ ] Create service scaling tests
-- [ ] Create failover tests
-- [ ] Create disaster recovery tests
+- [ ] Create Terraform Cloud organization (if needed)
+- [ ] Set up workspaces
+- [ ] Configure API tokens
+- [ ] Test workspace synchronization
+- [ ] Document setup in SOP
 
-### Security Testing
-- [ ] Run vulnerability scans
-- [ ] Perform penetration testing
-- [ ] Audit access controls
-- [ ] Review secret management
+### Notion
 
-## Phase 8: Documentation
+- [ ] Create Notion workspace (if needed)
+- [ ] Set up documentation database
+- [ ] Generate API integration token
+- [ ] Test documentation sync
+- [ ] Document setup in SOP
+
+### Slack
+
+- [ ] Create Slack app or webhook
+- [ ] Configure notification channels
+- [ ] Test notification delivery
+- [ ] Document setup in SOP
+
+## Phase 8: Testing and Validation
+
 **Status**: ⏳ Pending
 
-### Standard Operating Procedures
-- [ ] Write setup SOP
-- [ ] Write deployment SOP
-- [ ] Write incident response SOP
-- [ ] Write disaster recovery SOP
-- [ ] Write maintenance SOP
+### Script Testing
 
-### API Documentation
-- [ ] Document Terraform Cloud API usage
-- [ ] Document Notion API integration
-- [ ] Document Slack webhook usage
-- [ ] Document GitHub Actions API
+- [ ] Test all shell scripts for syntax
+- [ ] Test Docker Swarm scripts in test environment
+- [ ] Test Terraform Cloud integration
+- [ ] Test Notion sync functionality
+- [ ] Test Slack notifications
 
-### Runbooks
-- [ ] Create swarm initialization runbook
-- [ ] Create node addition runbook
-- [ ] Create service deployment runbook
-- [ ] Create incident response runbook
-- [ ] Create disaster recovery runbook
+### Workflow Testing
 
-## Phase 9: Deployment and Operations
+- [ ] Validate all GitHub Actions workflows
+- [ ] Test lint workflow
+- [ ] Test test workflow
+- [ ] Test build workflow
+- [ ] Test Terraform Cloud bridge workflow
+
+### Integration Testing
+
+- [ ] End-to-end test of Docker Swarm deployment
+- [ ] End-to-end test of Terraform Cloud integration
+- [ ] Test all notification triggers
+
+## Phase 9: Documentation Completion
+
 **Status**: ⏳ Pending
 
-### Initial Deployment
-- [ ] Set up management node infrastructure
-- [ ] Initialize Docker Swarm
-- [ ] Configure integrations
-- [ ] Deploy initial services
-- [ ] Verify all systems operational
+- [ ] Complete all SOPs with step-by-step instructions
+- [ ] Update README with comprehensive guide
+- [ ] Add troubleshooting sections to all SOPs
+- [ ] Create architecture diagrams
+- [ ] Add examples for common operations
+- [ ] Create quick start guide
 
-### Monitoring Setup
-- [ ] Deploy monitoring services
-- [ ] Configure alerting rules
-- [ ] Set up log aggregation
-- [ ] Create dashboards
-- [ ] Test alert notifications
+## Phase 10: Security Hardening
 
-### Backup and Recovery
-- [ ] Implement backup procedures
-- [ ] Test backup restoration
-- [ ] Document recovery procedures
-- [ ] Schedule regular backups
-- [ ] Monitor backup health
-
-## Phase 10: Continuous Improvement
 **Status**: ⏳ Pending
 
-### Automation Enhancement
-- [ ] Identify manual processes
-- [ ] Automate repetitive tasks
-- [ ] Optimize workflows
-- [ ] Add new integrations
-- [ ] Improve error handling
+- [ ] Review all scripts for security vulnerabilities
+- [ ] Implement input validation in all scripts
+- [ ] Ensure proper secrets management
+- [ ] Configure Docker Swarm security features
+- [ ] Review Terraform Cloud permissions
+- [ ] Audit API token access levels
+- [ ] Document security best practices
 
-### Documentation Updates
-- [ ] Keep SOPs current
-- [ ] Update runbooks based on incidents
-- [ ] Add troubleshooting guides
-- [ ] Document lessons learned
-- [ ] Share knowledge with team
+## Success Criteria
 
-### Security Hardening
-- [ ] Regular security audits
-- [ ] Update dependencies
-- [ ] Rotate secrets regularly
-- [ ] Review access controls
-- [ ] Implement security improvements
+### Functionality
 
-## Success Metrics
+- [ ] All scripts execute without errors
+- [ ] Docker Swarm can be initialized and managed
+- [ ] Terraform Cloud integration is operational
+- [ ] Notion sync works correctly
+- [ ] Slack notifications are delivered
 
-- ✅ All scripts execute without errors
-- ✅ All workflows pass successfully
-- ✅ All integrations functional
-- ✅ Documentation complete and accurate
-- ✅ Zero manual deployment steps
-- ✅ <5 minute deployment time
-- ✅ 99.9% uptime for management plane
-- ✅ All secrets rotated within 90 days
+### Documentation
 
-## Risk Mitigation
+- [ ] All SOPs are complete and accurate
+- [ ] README provides clear setup instructions
+- [ ] Architecture is well-documented
+- [ ] Troubleshooting guides are comprehensive
 
-### Technical Risks
-- **Risk**: Script failures during deployment
-  - **Mitigation**: Comprehensive testing and dry-run mode
-- **Risk**: Integration API changes
-  - **Mitigation**: Version pinning and regular updates
-- **Risk**: Secret exposure
-  - **Mitigation**: Never commit secrets, use secret scanning
+### Automation
 
-### Operational Risks
-- **Risk**: Swarm cluster failure
-  - **Mitigation**: Multi-manager setup and regular backups
-- **Risk**: Network partitions
-  - **Mitigation**: Network redundancy and monitoring
-- **Risk**: Data loss
-  - **Mitigation**: Regular backups and disaster recovery testing
+- [ ] All GitHub Actions workflows pass
+- [ ] Linting catches common issues
+- [ ] Tests validate critical functionality
+- [ ] Branch promotions work via auto-PRs
 
-## Dependencies
+### Security
 
-### External Services
-- GitHub (repository, Actions, API)
-- Terraform Cloud (infrastructure management)
-- Notion (documentation)
-- Slack (notifications)
-- Docker Hub or container registry
-
-### Tools and Technologies
-- Docker Engine 20.10+
-- Terraform 1.0+
-- Bash 4.0+
-- Git 2.20+
-- curl, jq, yq
-
-## Timeline
-
-- **Phase 1-2**: Week 1 - Foundation and CI/CD
-- **Phase 3-4**: Week 2 - Scripts and Configuration
-- **Phase 5-6**: Week 3 - Integrations and Secrets
-- **Phase 7-8**: Week 4 - Testing and Documentation
-- **Phase 9-10**: Week 5+ - Deployment and Operations
+- [ ] No secrets in repository
+- [ ] All credentials properly managed
+- [ ] Input validation implemented
+- [ ] Security best practices documented
 
 ## Maintenance
 
 ### Regular Tasks
-- Review and update specifications quarterly
-- Update dependencies monthly
-- Rotate secrets every 90 days
-- Backup verification weekly
-- Security audits quarterly
-- Documentation reviews monthly
 
-### Continuous Monitoring
-- Workflow execution status
-- Integration health checks
-- Resource usage trends
-- Error rates and patterns
-- Security events and alerts
+- Review and update SOPs quarterly
+- Update dependencies in workflows
+- Review and rotate API tokens
+- Test disaster recovery procedures
+- Update architecture documentation
+
+### Continuous Improvement
+
+- Gather feedback from operations
+- Optimize scripts for efficiency
+- Add new integrations as needed
+- Improve automation workflows
+- Enhance monitoring and alerting
+
+## Timeline
+
+- **Phase 1**: ✅ Completed
+- **Phase 2-4**: Week 1-2 (Core infrastructure)
+- **Phase 5-6**: Week 2-3 (Automation and workflows)
+- **Phase 7**: Week 3-4 (Integration setup)
+- **Phase 8-9**: Week 4-5 (Testing and documentation)
+- **Phase 10**: Ongoing (Security and maintenance)
+
+## Notes
+
+This is a living plan that will be updated as implementation progresses. Tasks may be reordered based on dependencies and priorities. New phases may be added as requirements evolve.

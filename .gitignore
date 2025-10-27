@@ -27,6 +27,8 @@ logs/
 .env
 .env.local
 .env.*.local
+*.env
+!.env.example
 
 # Common build output directories (add more as needed for your stack)
 /build/
@@ -66,37 +68,5 @@ htmlcov/
 # Debug files
 *.pdb
 *.dSYM/
-
-# Docker
-*.pid
-*.seed
-*.pid.lock
-
-# Terraform
-*.tfstate
-*.tfstate.*
-*.tfvars
-.terraform/
-.terraform.lock.hcl
-crash.log
-override.tf
-override.tf.json
-*_override.tf
-*_override.tf.json
-
-# Secrets and sensitive files
-secrets/
-*.pem
-*.key
-*.crt
-*.p12
-*.pfx
-config/secrets.yml
-config/secrets.yaml
-
-# Backup files
-*.bak
-*.backup
-*.old
 
 # Note: Add technology-specific ignores when you adopt a stack

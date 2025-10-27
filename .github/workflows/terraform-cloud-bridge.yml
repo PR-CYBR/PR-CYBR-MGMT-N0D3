@@ -1,0 +1,113 @@
+name: Terraform Cloud Bridge
+
+"on":
+  push:
+    branches: [main, stage, prod]
+    paths:
+      - 'config/terraform/**'
+  pull_request:
+    branches: [main, stage, prod]
+    paths:
+      - 'config/terraform/**'
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Action to perform'
+        required: true
+        default: 'plan'
+        type: choice
+        options:
+          - plan
+          - apply
+
+jobs:
+  terraform-cloud:
+    name: Terraform Cloud Integration
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          cli_config_credentials_token: ${{ secrets.TFC_API_TOKEN }}
+
+      - name: Terraform Init
+        id: init
+        run: |
+          cd config/terraform
+          terraform init
+        continue-on-error: true
+
+      - name: Terraform Validate
+        id: validate
+        run: |
+          cd config/terraform
+          terraform validate -no-color
+
+      - name: Terraform Format Check
+        id: fmt
+        run: |
+          cd config/terraform
+          terraform fmt -check -recursive
+        continue-on-error: true
+
+      - name: Terraform Plan
+        id: plan
+        if: github.event_name == 'pull_request' || github.event.inputs.action == 'plan'
+        run: |
+          cd config/terraform
+          terraform plan -no-color
+        continue-on-error: true
+
+      - name: Comment PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        env:
+          PLAN: "${{ steps.plan.outputs.stdout }}"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+            #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+
+            <details><summary>Show Plan</summary>
+
+            \`\`\`terraform
+            ${process.env.PLAN}
+            \`\`\`
+
+            </details>
+
+            *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
+
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push' && github.event.inputs.action == 'apply'
+        run: |
+          cd config/terraform
+          terraform apply -auto-approve
+
+      - name: Notify Slack on Success
+        if: success() && (secrets.SLACK_WEBHOOK_URL != '')
+        run: |
+          ./scripts/integrations/slack-notify.sh "Terraform Cloud operation completed successfully" "success"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Notify Slack on Failure
+        if: failure() && (secrets.SLACK_WEBHOOK_URL != '')
+        run: |
+          ./scripts/integrations/slack-notify.sh "Terraform Cloud operation failed" "error"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

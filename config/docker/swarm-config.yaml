@@ -1,0 +1,41 @@
+# Docker Swarm Configuration
+# This file contains swarm-wide configuration settings
+
+# Network Configuration
+networks:
+  overlay_network:
+    driver: overlay
+    encrypted: true
+    attachable: true
+
+# Service Defaults
+service_defaults:
+  update_config:
+    parallelism: 1
+    delay: 10s
+    failure_action: rollback
+  restart_policy:
+    condition: on-failure
+    delay: 5s
+    max_attempts: 3
+  logging:
+    driver: json-file
+    options:
+      max-size: "10m"
+      max-file: "3"
+
+# Resource Limits (defaults)
+resources:
+  limits:
+    cpus: '2'
+    memory: 2G
+  reservations:
+    cpus: '0.5'
+    memory: 512M
+
+# Health Check Defaults
+healthcheck:
+  interval: 30s
+  timeout: 10s
+  retries: 3
+  start_period: 40s

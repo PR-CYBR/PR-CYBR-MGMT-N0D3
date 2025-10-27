@@ -1,326 +1,331 @@
 # Specification
 
 ## Overview
-This document contains the technical specifications for the PR-CYBR management node, which serves as the central control plane for the distributed PR-CYBR architecture.
 
-## System Architecture
+This document contains the technical specifications for PR-CYBR-MGMT-N0D3, the central management node for the PR-CYBR distributed architecture.
 
-### Management Node Components
+## Management Node Specifications
+
+### Purpose
+
+PR-CYBR-MGMT-N0D3 serves as the orchestration hub for:
+
+- Docker Swarm cluster management
+- Terraform Cloud infrastructure automation
+- Notion workspace integration for documentation
+- Slack notifications and alerting
+- Secrets management across distributed nodes
+- Network configuration and security
+
+### Directory Structure
 
 ```
-PR-CYBR-MGMT-N0D3/
-├── .specify/              # Specification framework
+/
+├── .specify/
+│   ├── constitution.md    # Project principles and governance
+│   ├── spec.md           # This file - technical specifications
+│   ├── plan.md           # Implementation planning
+│   └── tasks/            # Individual task specifications
 ├── .github/
-│   └── workflows/        # CI/CD automation
-│       ├── lint.yml      # Code and config linting
-│       ├── test.yml      # Integration tests
-│       ├── build.yml     # Container image builds
-│       ├── tfc-bridge.yml # Terraform Cloud integration
-│       └── spec-kit.yml  # Spec framework validation
-├── scripts/              # Management scripts
-│   ├── swarm/           # Docker Swarm management
+│   └── workflows/
+│       ├── spec-kit.yml       # Spec-Kit validation workflow
+│       ├── lint.yml           # Linting for scripts and docs
+│       ├── test.yml           # Testing workflows
+│       ├── build.yml          # Build workflows
+│       ├── terraform-cloud-bridge.yml  # TFC integration workflow
+│       └── ...                # Branch-specific workflows
+├── docs/
+│   ├── SOPs/
+│   │   ├── docker-swarm-management.md
+│   │   ├── terraform-cloud-setup.md
+│   │   ├── notion-integration.md
+│   │   └── slack-integration.md
+│   └── architecture/
+│       └── system-overview.md
+├── scripts/
+│   ├── docker-swarm/
 │   │   ├── init-swarm.sh
 │   │   ├── add-node.sh
 │   │   ├── remove-node.sh
-│   │   ├── deploy-service.sh
-│   │   └── scale-service.sh
-│   ├── integrations/    # External service integrations
+│   │   └── update-services.sh
+│   ├── terraform/
+│   │   ├── setup-tfc.sh
+│   │   └── sync-workspaces.sh
+│   ├── integrations/
 │   │   ├── notion-sync.sh
-│   │   ├── slack-notify.sh
-│   │   └── tfc-sync.sh
-│   └── secrets/         # Secret management
-│       ├── rotate-secrets.sh
-│       └── sync-secrets.sh
-├── config/              # Configuration files
-│   ├── docker/         # Docker configurations
-│   │   ├── docker-compose.yml
-│   │   └── swarm-config.yml
-│   ├── terraform/      # Terraform configurations
-│   │   ├── main.tf
-│   │   ├── variables.tf
-│   │   └── outputs.tf
-│   └── templates/      # Configuration templates
-│       ├── .env.template
-│       └── secrets.template
-├── docs/               # Additional documentation
-│   ├── setup.md
-│   ├── deployment.md
-│   └── troubleshooting.md
-└── README.md           # Main documentation
+│   │   └── slack-notify.sh
+│   └── setup/
+│       ├── init-env.sh
+│       └── configure-secrets.sh
+├── config/
+│   ├── docker/
+│   │   ├── swarm-config.yaml
+│   │   └── stack-templates/
+│   ├── terraform/
+│   │   ├── workspaces.tf
+│   │   └── variables.tf
+│   └── .env.example
+├── README.md
+├── BRANCHING.md
+└── LICENSE
 ```
 
 ## Docker Swarm Management
 
-### Swarm Initialization
-The management node can initialize a Docker Swarm cluster:
-- Create swarm manager node
-- Generate join tokens for worker nodes
-- Configure overlay networks
-- Set up service discovery
-
 ### Node Management
-Scripts to manage swarm nodes:
-- **add-node.sh**: Add new worker or manager nodes
-- **remove-node.sh**: Gracefully remove nodes from the swarm
-- **list-nodes.sh**: Display all nodes and their status
-- **update-node.sh**: Update node labels and configurations
 
-### Service Management
-Scripts to deploy and manage services:
-- **deploy-service.sh**: Deploy new services to the swarm
-- **scale-service.sh**: Scale service replicas
-- **update-service.sh**: Update service configurations
-- **rollback-service.sh**: Rollback to previous service version
+- **Purpose**: Manage Docker Swarm manager and worker nodes
+- **Scripts**:
+  - `init-swarm.sh`: Initialize Docker Swarm cluster
+  - `add-node.sh`: Add new worker or manager nodes
+  - `remove-node.sh`: Gracefully remove nodes from the swarm
+  - `update-services.sh`: Update services across the swarm
 
-## GitHub Actions Workflows
+### Configuration
 
-### Lint Workflow (lint.yml)
-Validates code quality and configuration:
-- **Triggers**: Push, Pull Request
-- **Steps**:
-  - Lint shell scripts with shellcheck
-  - Validate YAML files
-  - Check Markdown syntax with markdownlint
-  - Validate Terraform configurations with terraform fmt
-  - Check for secrets in code
+- **Location**: `config/docker/`
+- **Files**:
+  - `swarm-config.yaml`: Swarm-wide configuration
+  - `stack-templates/`: Docker Compose stack templates
 
-### Test Workflow (test.yml)
-Runs integration and unit tests:
-- **Triggers**: Push, Pull Request
-- **Steps**:
-  - Execute script unit tests
-  - Run integration tests against mock services
-  - Validate configuration templates
-  - Test disaster recovery procedures
+### SOPs
 
-### Build Workflow (build.yml)
-Builds and publishes container images:
-- **Triggers**: Push to main, Release tags
-- **Steps**:
-  - Build Docker images for management services
-  - Run security scans on images
-  - Push images to container registry
-  - Tag images with version and commit SHA
-
-### Terraform Cloud Bridge (tfc-bridge.yml)
-Integrates with Terraform Cloud:
-- **Triggers**: Push to main, Manual dispatch
-- **Steps**:
-  - Authenticate with Terraform Cloud API
-  - Trigger workspace runs
-  - Monitor run status
-  - Apply approved changes
-  - Report results to Slack
-
-### Spec-Kit Validation (spec-kit.yml)
-Validates specification framework:
-- **Triggers**: Push, Pull Request
-- **Steps**:
-  - Check required specification files exist
-  - Validate Markdown syntax
-  - Check for broken links
-  - Summarize task status
+- **Location**: `docs/SOPs/docker-swarm-management.md`
+- **Contents**:
+  - Node initialization procedures
+  - Adding/removing nodes
+  - Service deployment
+  - Troubleshooting common issues
 
 ## Terraform Cloud Integration
 
-### Configuration Management
-- **Workspace**: pr-cybr-mgmt-node
-- **Variables**: Stored in TFC, synced from environment
-- **State Management**: Remote state in Terraform Cloud
-- **Version Control**: VCS-driven workflows
+### Workspace Management
 
-### API Integration
-- Trigger runs programmatically
-- Retrieve run status and outputs
-- Manage workspace variables
-- Handle state locking
+- **Purpose**: Manage infrastructure as code through Terraform Cloud
+- **Scripts**:
+  - `setup-tfc.sh`: Configure Terraform Cloud integration
+  - `sync-workspaces.sh`: Synchronize workspace configurations
+
+### Configuration
+
+- **Location**: `config/terraform/`
+- **Files**:
+  - `workspaces.tf`: Terraform workspace definitions
+  - `variables.tf`: Variable definitions for workspaces
+
+### GitHub Actions Bridge
+
+- **Workflow**: `.github/workflows/terraform-cloud-bridge.yml`
+- **Triggers**:
+  - Push to `main`, `stage`, or `prod` branches
+  - Manual workflow dispatch
+- **Actions**:
+  - Validate Terraform configurations
+  - Plan infrastructure changes
+  - Apply changes via Terraform Cloud API
+  - Report status to Slack
+
+### SOPs
+
+- **Location**: `docs/SOPs/terraform-cloud-setup.md`
+- **Contents**:
+  - Initial Terraform Cloud setup
+  - Workspace configuration
+  - API token management
+  - Troubleshooting
 
 ## Notion Integration
 
-### Documentation Sync
-Automatically sync documentation to Notion:
-- SOP documents
-- Infrastructure diagrams
-- Runbooks and procedures
-- Incident reports
+### Documentation Automation
 
-### API Operations
-- Create and update pages
-- Organize in hierarchical databases
-- Tag and categorize content
-- Search and retrieve information
+- **Purpose**: Synchronize project documentation with Notion workspace
+- **Scripts**:
+  - `notion-sync.sh`: Sync documentation to Notion
+
+### Configuration
+
+- **Environment Variables**:
+  - `NOTION_API_KEY`: Notion API token
+  - `NOTION_DATABASE_ID`: Target database for sync
+
+### SOPs
+
+- **Location**: `docs/SOPs/notion-integration.md`
+- **Contents**:
+  - Notion workspace setup
+  - API key generation
+  - Sync configuration
+  - Troubleshooting
 
 ## Slack Integration
 
+### Notification System
+
+- **Purpose**: Send notifications for deployment events, alerts, and status updates
+- **Scripts**:
+  - `slack-notify.sh`: Send notifications to Slack channels
+
+### Configuration
+
+- **Environment Variables**:
+  - `SLACK_WEBHOOK_URL`: Incoming webhook URL
+  - `SLACK_CHANNEL`: Default notification channel
+
 ### Notification Types
-- **Deployment notifications**: Service deployments and updates
-- **Alert notifications**: Infrastructure alerts and incidents
-- **CI/CD notifications**: Workflow success/failure
-- **Audit notifications**: Security and access events
 
-### Webhook Configuration
-- Configure incoming webhooks for channels
-- Format messages with rich formatting
-- Include links to GitHub, Terraform Cloud, Notion
-- Support interactive buttons and actions
+- Docker Swarm events (node join/leave, service updates)
+- Terraform Cloud deployment status
+- CI/CD pipeline results
+- Security alerts
 
-## Secret Management
+### SOPs
+
+- **Location**: `docs/SOPs/slack-integration.md`
+- **Contents**:
+  - Slack app setup
+  - Webhook configuration
+  - Channel management
+  - Alert customization
+
+## Secrets Management
 
 ### Environment Variables
-Required environment variables:
-```bash
-# Docker Swarm
-SWARM_MANAGER_IP=
-SWARM_JOIN_TOKEN_WORKER=
-SWARM_JOIN_TOKEN_MANAGER=
 
-# Terraform Cloud
-TFC_API_TOKEN=
-TFC_ORGANIZATION=
-TFC_WORKSPACE=
+- **Template**: `config/.env.example`
+- **Required Variables**:
 
-# Notion
-NOTION_API_TOKEN=
-NOTION_DATABASE_ID=
+  ```bash
+  # Docker Swarm
+  SWARM_MANAGER_IP=
+  SWARM_JOIN_TOKEN_MANAGER=
+  SWARM_JOIN_TOKEN_WORKER=
+  
+  # Terraform Cloud
+  TFC_API_TOKEN=
+  TFC_ORGANIZATION=
+  TFC_WORKSPACE=
+  
+  # Notion
+  NOTION_API_KEY=
+  NOTION_DATABASE_ID=
+  
+  # Slack
+  SLACK_WEBHOOK_URL=
+  SLACK_CHANNEL=
+  
+  # GitHub
+  GITHUB_TOKEN=
+  ```
 
-# Slack
-SLACK_WEBHOOK_URL=
-SLACK_BOT_TOKEN=
+### Secrets Storage
 
-# GitHub
-GITHUB_TOKEN=
-GITHUB_ORG=PR-CYBR
+- GitHub Secrets for CI/CD workflows
+- Environment files for local development (gitignored)
+- Docker secrets for swarm services
 
-# Container Registry
-REGISTRY_URL=
-REGISTRY_USERNAME=
-REGISTRY_PASSWORD=
-```
+### Setup Script
 
-### Secret Rotation
-- Automated secret rotation scripts
-- Integration with secret management services
-- Audit logging for all secret access
-- Secure secret distribution to nodes
+- **Script**: `scripts/setup/configure-secrets.sh`
+- **Purpose**: Interactive setup for environment variables
 
-## Network Configuration
+## GitHub Actions Workflows
 
-### Overlay Networks
-- **management**: Internal management network
-- **services**: Application services network
-- **monitoring**: Monitoring and logging network
+### Spec-Kit Validation
 
-### Port Mappings
-- **2377**: Swarm manager communication
-- **7946**: Container network discovery (TCP/UDP)
-- **4789**: Overlay network traffic (UDP)
+- **Workflow**: `spec-kit.yml`
+- **Purpose**: Validate specification files
+- **Triggers**: Push to any branch, PR to any branch
 
-## Monitoring and Logging
+### Linting
 
-### Metrics Collection
-- Node health and resource usage
-- Service availability and performance
-- API call rates and latencies
-- Secret access and rotation events
+- **Workflow**: `lint.yml`
+- **Purpose**: Lint shell scripts, YAML files, and markdown
+- **Tools**:
+  - `shellcheck` for shell scripts
+  - `yamllint` for YAML files
+  - `markdownlint-cli2` for markdown files
 
-### Log Aggregation
-- Centralized log collection
-- Structured logging format
-- Log retention policies
-- Search and analysis capabilities
+### Testing
 
-## Disaster Recovery
+- **Workflow**: `test.yml`
+- **Purpose**: Test scripts and configurations
+- **Tests**:
+  - Script syntax validation
+  - Configuration file validation
+  - Integration tests (where applicable)
 
-### Backup Procedures
-- Regular backups of swarm state
-- Configuration backups to version control
-- Database exports for stateful services
-- Encrypted backup storage
+### Build
 
-### Recovery Procedures
-- Swarm cluster recreation
-- Service restoration from backups
-- State recovery from Terraform Cloud
-- Documentation in runbooks
+- **Workflow**: `build.yml`
+- **Purpose**: Build Docker images or artifacts
+- **Actions**:
+  - Build and tag images
+  - Push to container registry
 
-## Security Requirements
+### Terraform Cloud Bridge
 
-### Access Control
-- SSH key-based authentication
-- Role-based access control (RBAC)
-- API token rotation
-- Audit logging of all access
+- **Workflow**: `terraform-cloud-bridge.yml`
+- **Purpose**: Integrate with Terraform Cloud
+- **Actions**:
+  - Validate Terraform configurations
+  - Trigger Terraform Cloud runs
+  - Monitor run status
+  - Report results to Slack
 
-### Network Security
-- Firewall rules for swarm ports
-- TLS encryption for all communications
-- VPN for management access
-- Network segmentation
+### Branch-Specific Workflows
 
-### Compliance
-- Regular security audits
-- Vulnerability scanning
-- Penetration testing
-- Compliance reporting
+Following the Spec-Kit branching model:
 
-## Performance Requirements
+- `spec.yml`: Validates specification documents in the `spec` branch
+- `plan.yml`: Validates planning documents in the `plan` branch
+- `impl.yml`: Runs implementation-specific validation in the `impl` branch
+- `dev.yml`: Executes development tasks in the `dev` branch
+- `test.yml`: Runs comprehensive test suites in the `test` branch
+- `stage.yml`: Deploys to staging environment from the `stage` branch
+- `prod.yml`: Handles production deployment from the `prod` branch
+- `pages.yml`: Builds and deploys documentation from the `pages` branch
 
-### Scalability
-- Support 10-100 worker nodes
-- Handle 1000+ concurrent services
-- Process 10,000+ API calls per minute
-- Store 1TB+ of logs and metrics
+## Non-Functional Requirements
 
-### Availability
-- 99.9% uptime for management plane
-- Automatic failover for manager nodes
-- Zero-downtime deployments
-- Graceful degradation
+### Security
 
-## Testing Requirements
+- All secrets stored in GitHub Secrets or secure environment files
+- Scripts validate input and sanitize commands
+- Docker Swarm uses encrypted overlay networks
+- Terraform Cloud uses secure API authentication
 
-### Unit Tests
-- Script functionality tests
-- Configuration validation tests
-- API integration tests
-- Secret management tests
+### Reliability
 
-### Integration Tests
-- End-to-end deployment tests
-- Service scaling tests
-- Failover tests
-- Disaster recovery tests
+- Scripts include error handling and logging
+- Idempotent operations where possible
+- Rollback procedures documented in SOPs
 
-## Documentation Requirements
+### Maintainability
 
-### Standard Operating Procedures (SOPs)
-- Initial setup and configuration
-- Daily operations and maintenance
-- Incident response procedures
-- Disaster recovery procedures
+- All scripts are well-commented
+- Configuration is externalized
+- Documentation is kept up-to-date
+- Version control for all infrastructure code
 
-### API Documentation
-- Terraform Cloud API usage
-- Notion API integration
-- Slack webhook specifications
-- GitHub Actions workflow reference
+### Portability
 
-### Troubleshooting Guides
-- Common issues and solutions
-- Debug procedures
-- Log analysis techniques
-- Performance tuning
+- Scripts use standard Unix tools
+- Docker Swarm configuration is platform-agnostic
+- Terraform configurations support multiple cloud providers
+
+### Usability
+
+- Clear SOPs for all operations
+- Interactive setup scripts
+- Comprehensive README documentation
+- Examples provided for common tasks
 
 ## Extensibility
 
-### Plugin Architecture
-- Custom script plugins
-- Integration adapters
-- Monitoring plugins
-- Notification handlers
+The management node can be extended with:
 
-### API Endpoints
-- RESTful API for management operations
-- Webhook receivers for external events
-- GraphQL API for complex queries
-- WebSocket for real-time updates
+- Additional service integrations (monitoring, logging, etc.)
+- Custom automation workflows
+- Client node templates
+- Advanced networking configurations
+- Multi-cloud support
