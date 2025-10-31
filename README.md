@@ -81,6 +81,11 @@ PR-CYBR-MGMT-N0D3 is the orchestration hub for the PR-CYBR distributed architect
 └── LICENSE              # MIT License
 ```
 
+## Live Codebase Mindmap
+
+Auto-generated on each push: **repo-map.html** (via GitHub Pages and CI artifact).
+When Pages is enabled, it will be served at: `https://<owner>.github.io/<repo>/repo-map.html`
+
 ## Features
 
 ### Docker Swarm Management
