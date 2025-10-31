@@ -69,4 +69,7 @@ htmlcov/
 *.pdb
 *.dSYM/
 
+# Markmap generated files
+/markmap/
+
 # Note: Add technology-specific ignores when you adopt a stack
