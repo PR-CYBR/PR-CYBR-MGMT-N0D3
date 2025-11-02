@@ -54,7 +54,7 @@ jobs:
             exit 1
           fi
           echo "✅ Build output validated - index.html exists"
-          echo "File size: $(stat -c%s dist/index.html) bytes"
+          echo "File size: $(wc -c < dist/index.html) bytes"
 
       - name: Upload artifact (downloadable)
         uses: actions/upload-artifact@v4
@@ -68,8 +68,8 @@ jobs:
           path: dist
 
   deploy:
-    runs-on: ubuntu-latest
     needs: build
+    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -85,7 +85,7 @@ jobs:
           echo "⚠️ Initial deployment failed, retrying after 30 seconds..."
           sleep 30
 
-      - name: Retry deployment (second attempt)
+      - name: Deploy to GitHub Pages (retry)
         if: steps.deployment.outcome == 'failure'
         id: deployment-retry
         uses: actions/deploy-pages@v4
