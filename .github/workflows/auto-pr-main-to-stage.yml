@@ -2,6 +2,8 @@ name: Auto PR from main to stage
 
 on:
   workflow_run:
+    # NOTE: If these workflow names change, update them here to maintain automation
+    # These workflows must be defined in .github/workflows/ directory
     workflows: ["Build", "Lint", "Test"]
     branches: [main]
     types: [completed]
@@ -65,10 +67,14 @@ jobs:
                 core.info(`✅ Created PR: ${pr.data.html_url}`);
               }
             } catch (error) {
-              if (error.message.includes("undefined")) {
+              if (error.status === 404) {
+                core.setFailed(`❌ Resource not found: ${error.message}`);
+              } else if (error.status === 403) {
+                core.setFailed(`❌ Permission denied: ${error.message}`);
+              } else if (error.message && error.message.includes("undefined")) {
                 core.warning("⚠️ Undefined reference encountered — possibly from deprecated API usage.");
               } else {
-                core.setFailed(`❌ Unhandled error: ${error.message}`);
+                core.setFailed(`❌ API error (${error.status || 'unknown'}): ${error.message}`);
               }
             }
 
@@ -99,7 +105,12 @@ jobs:
               const pr = prs[0];
               core.info(`🧩 Attempting to auto-merge PR #${pr.number} (${pr.title})`);
 
-              // Check if PR is mergeable
+              // Check if PR is mergeable (null means GitHub is still computing)
+              if (pr.mergeable === null) {
+                core.warning(`⚠️ PR #${pr.number} mergeability is still being computed. Skipping auto-merge.`);
+                return;
+              }
+
               if (pr.mergeable === false) {
                 core.warning(`⚠️ PR #${pr.number} is not mergeable (conflicts exist).`);
                 return;
