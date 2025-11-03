@@ -1,41 +1,138 @@
 name: Auto PR from main to stage
-"on":
+
+on:
   workflow_run:
-    workflows: ["Spec-Kit Validation"]
-    branches:
-      - main
-    types:
-      - completed
+    # NOTE: If these workflow names change, update them here to maintain automation
+    # These workflows must be defined in .github/workflows/ directory
+    workflows: ["Build", "Lint", "Test"]
+    branches: [main]
+    types: [completed]
+
 permissions:
+  contents: write
   pull-requests: write
-  contents: read
+
 jobs:
   create-pull-request:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
-      - name: Create Pull Request
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Validate GitHub Context
+        run: |
+          echo "🔍 Repository Owner: ${{ github.repository_owner }}"
+          echo "📦 Repository: ${{ github.repository }}"
+          if [ -z "${{ github.repository_owner }}" ]; then
+            echo "❌ Missing repository context."
+            exit 1
+          fi
+
+      - name: Create or Update PR (main → stage)
         uses: actions/github-script@v7
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const head = 'main';
-            const base = 'stage';
-            const { data: pulls } = await github.pulls.list({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              head: `${context.repo.owner}:${head}`,
-              base: base,
-              state: 'open'
-            });
-            if (pulls.length === 0) {
-              await github.pulls.create({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                head: head,
-                base: base,
-                title: 'Sync stage with main',
-                body: 'Automated PR to sync stage branch with main.'
+            const { owner, repo } = context.repo;
+            const source = "main";
+            const target = "stage";
+
+            core.info(`🔄 Checking for existing PR from ${source} → ${target}`);
+
+            try {
+              // List existing PRs (modern syntax)
+              const { data: pulls } = await github.rest.pulls.list({
+                owner,
+                repo,
+                state: "open",
+                head: `${owner}:${source}`,
+                base: target
               });
-            } else {
-              console.log('Pull request already exists');
+
+              if (Array.isArray(pulls) && pulls.length > 0) {
+                core.info(`✅ Existing PR found: ${pulls[0].html_url}`);
+              } else {
+                core.info("🆕 No PR found. Creating a new one...");
+
+                const pr = await github.rest.pulls.create({
+                  owner,
+                  repo,
+                  head: source,
+                  base: target,
+                  title: `🔄 Auto PR from ${source} → ${target}`,
+                  body: "Automated PR to merge changes from **main** into **stage**."
+                });
+
+                core.info(`✅ Created PR: ${pr.data.html_url}`);
+              }
+            } catch (error) {
+              if (error.status === 404) {
+                core.setFailed(`❌ Resource not found: ${error.message}`);
+              } else if (error.status === 403) {
+                core.setFailed(`❌ Permission denied: ${error.message}`);
+              } else if (error.message && error.message.includes("undefined")) {
+                core.warning("⚠️ Undefined reference encountered — possibly from deprecated API usage.");
+              } else {
+                core.setFailed(`❌ API error (${error.status || 'unknown'}): ${error.message}`);
+              }
             }
+
+      - name: Optional Auto-Merge (if checks pass)
+        if: ${{ success() }}
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { owner, repo } = context.repo;
+            const source = "main";
+            const target = "stage";
+
+            try {
+              const { data: prs } = await github.rest.pulls.list({
+                owner,
+                repo,
+                state: "open",
+                head: `${owner}:${source}`,
+                base: target,
+              });
+
+              if (prs.length === 0) {
+                core.info("No open PRs to merge.");
+                return;
+              }
+
+              const pr = prs[0];
+              core.info(`🧩 Attempting to auto-merge PR #${pr.number} (${pr.title})`);
+
+              // Check if PR is mergeable (null means GitHub is still computing)
+              if (pr.mergeable === null) {
+                core.warning(`⚠️ PR #${pr.number} mergeability is still being computed. Skipping auto-merge.`);
+                return;
+              }
+
+              if (pr.mergeable === false) {
+                core.warning(`⚠️ PR #${pr.number} is not mergeable (conflicts exist).`);
+                return;
+              }
+
+              if (pr.mergeable_state !== 'clean') {
+                core.warning(`⚠️ PR #${pr.number} mergeable_state is '${pr.mergeable_state}' (not 'clean').` +
+                  ` Required checks may not have passed.`);
+                return;
+              }
+
+              await github.rest.pulls.merge({
+                owner,
+                repo,
+                pull_number: pr.number,
+                merge_method: "squash"
+              });
+
+              core.info(`✅ Successfully merged PR #${pr.number}`);
+            } catch (error) {
+              core.warning(`⚠️ Auto-merge skipped: ${error.message}`);
+            }
+
+      - name: Log Completion
+        run: echo "✅ Auto PR workflow completed successfully."
